@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Phases/Menu.gd" type="Script" id=1]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="GridContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="GridContainer"]
+margin_right = 62.0
+margin_bottom = 20.0
+text = "Phase 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button2" type="Button" parent="GridContainer"]
+margin_top = 24.0
+margin_right = 62.0
+margin_bottom = 44.0
+text = "Phase 2"

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://fire.png" type="Texture" id=1]
+
+
+[sub_resource type="RectangleShape2D" id=1]
+
+[node name="fire" type="RigidBody2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2( 1.6, 1.6 )
+shape = SubResource( 1 )
+
+[node name="fogo" type="Sprite" parent="."]
+texture = ExtResource( 1 )

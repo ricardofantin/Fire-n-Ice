@@ -1,0 +1,121 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://player.png" type="Texture" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends KinematicBody2D
+
+# constants
+var tilemap
+var NORMAL
+
+# player status
+var face_direction
+var can_control # cannot control on falling or moving up a wall/ice # or when a ice is sliding
+var can_create_ice
+var timer
+
+func _ready():
+	tilemap = self.get_parent()
+	NORMAL = Vector2(0, -1)
+	face_direction = 1 # facing right
+	can_control = true
+	can_create_ice = true
+	timer = get_node(\"Timer\")
+	timer.connect(\"timeout\", self, \"_create_ice_timer_timeout\")
+
+func _create_ice_timer_timeout():
+	can_create_ice = true
+
+enum elements {EMPTY = -1, WALL = 0, ICE = 1, FIRE = 2, PLAYER = 3}
+func get_element(position):
+	# position should be a Vector2
+	position.x = int(position.x/32)
+	position.y = int(position.y/32)
+	return tilemap.get_cellv(position)
+
+func get_tiled_position():
+	var p = get_position()
+	p.x = int(p.x/32)
+	p.y = int(p.y/32)
+	return p
+
+func _physics_process(delta):
+	if ( is_on_floor() and can_control == true): # is on floor, can move and etc
+		if ( can_create_ice and Input.is_action_pressed(\"ui_down\") ):
+			var pos_foward_bellow = get_tiled_position() + face_direction*Vector2(1, 0) + Vector2(0, 1)
+			if (!tilemap.is_solidv(get_tiled_position() + Vector2(0, 1))):
+				pos_foward_bellow -= face_direction*Vector2(1, 0)
+			if (tilemap.can_create_destroy_icev(pos_foward_bellow)):
+				tilemap.create_destroy_icev(pos_foward_bellow)
+				can_create_ice = false
+				timer.start()
+
+		elif ( Input.is_action_pressed(\"ui_left\") ):
+			face_direction = -1
+			var v = Vector2(-32 * 5, 0)
+			move_and_slide(v, NORMAL)
+			var p = get_tiled_position()
+			var x = p.x
+			var y = p.y
+			var left_solid = tilemap.is_solid(x - 1, y)
+			var upper_solid = tilemap.is_solid(x, y - 1)
+			var upper_left_solid = tilemap.is_solid(x - 1, y - 1)
+			var left_left_solid = tilemap.is_solid(x - 2, y)
+			# test push ICE
+			if (is_on_wall() and tilemap.is_ice(x - 1, y) and !left_left_solid):
+				tilemap.set_cell(x - 1, y, elements.EMPTY)
+				var ice = load(\"res://Ice.tscn\").instance(-1)
+				tilemap.add_child(ice)
+				ice.set_position(32*Vector2(x - 1, y) + Vector2(0, 16))
+				ice.set_direction(-1)
+				can_control = false
+			elif ( is_on_wall() and left_solid and !upper_solid and !upper_left_solid):
+				set_position(get_position() + Vector2(-1, -32))
+
+		elif ( Input.is_action_pressed(\"ui_right\") ):
+			face_direction = 1
+			var v = Vector2(+32 * 5, 0)
+			move_and_slide(v, NORMAL)
+			var p = get_tiled_position()
+			var x = p.x
+			var y = p.y
+			var right_solid = tilemap.is_solid(x + 1, y)
+			var upper_solid = tilemap.is_solid(x, y - 1)
+			var upper_right_solid = tilemap.is_solid(x + 1, y - 1)
+			var right_right_solid = tilemap.is_solid(x + 2, y)
+			# test push ICE
+			if (is_on_wall() and tilemap.is_ice(x + 1, y) and !right_right_solid):
+				tilemap.set_cell(x + 1, y, elements.EMPTY)
+				var ice = load(\"res://Ice.tscn\").instance()
+				tilemap.add_child(ice)
+				ice.set_position(32*Vector2(x + 1, y) + Vector2(32, 16))
+				ice.set_direction(+1)
+				can_control = false
+			elif (is_on_wall() and right_solid and !upper_solid and !upper_right_solid):
+				set_position(get_position() + Vector2(+1, -32))
+
+	else: # cannot control
+		if (!is_on_floor()):
+			var v = Vector2(0, 160)
+			var hit = move_and_slide(v, NORMAL)
+			if ( hit != null ):
+				can_control = true
+"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 7.14286, 10 )
+
+[node name="player" type="KinematicBody2D"]
+script = SubResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2( 1.6, 1.5 )
+shape = SubResource( 2 )
+
+[node name="jogador" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
