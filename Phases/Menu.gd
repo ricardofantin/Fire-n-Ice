@@ -9,6 +9,7 @@ extends Control
 func _ready():
 	get_node("GridContainer/Button").connect("pressed", self, "phase1")
 	get_node("GridContainer/Button2").connect("pressed", self, "phase2")
+	get_node("GridContainer/Button3").connect("pressed", self, "phase3")
 	pass # Replace with function body.
 
 func phase1():
@@ -16,6 +17,9 @@ func phase1():
 
 func phase2():
 	get_tree().change_scene("res://Phases/Phase2.tscn")
+
+func phase3():
+	get_tree().change_scene("res://Phases/Phase3.tscn")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

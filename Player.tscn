@@ -40,7 +40,7 @@ func get_tiled_position():
 	p.y = int(p.y/32)
 	return p
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if ( is_on_floor() and can_control == true): # is on floor, can move and etc
 		if ( can_create_ice and Input.is_action_pressed(\"ui_down\") ):
 			var pos_foward_bellow = get_tiled_position() + face_direction*Vector2(1, 0) + Vector2(0, 1)
@@ -54,7 +54,7 @@ func _physics_process(delta):
 		elif ( Input.is_action_pressed(\"ui_left\") ):
 			face_direction = -1
 			var v = Vector2(-32 * 5, 0)
-			move_and_slide(v, NORMAL)
+			var _unused = move_and_slide(v, NORMAL)
 			var p = get_tiled_position()
 			var x = p.x
 			var y = p.y
@@ -76,7 +76,7 @@ func _physics_process(delta):
 		elif ( Input.is_action_pressed(\"ui_right\") ):
 			face_direction = 1
 			var v = Vector2(+32 * 5, 0)
-			move_and_slide(v, NORMAL)
+			var _unused = move_and_slide(v, NORMAL)
 			var p = get_tiled_position()
 			var x = p.x
 			var y = p.y

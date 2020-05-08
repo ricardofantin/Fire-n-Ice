@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Fire N Ice"
-run/main_scene="res://Phases/Menu.tscn"
+run/main_scene="res://Phases/Phase3.tscn"
 config/icon="res://icon.png"
 
 [input]

@@ -13,6 +13,10 @@ func init(sliding_direction):
 	direction = sliding_direction
 
 func _physics_process(delta):
+	# 0 ice start faling
+	# 1 move until it wall or end floor
+	# 2 fall
+	# 3 (it wall in 1) if fire remove fire and ice, if wall stop
 	match(life_cicle):
 		0:
 			move_and_slide(Vector2(0, 32*5), Vector2(0, -1))
@@ -33,7 +37,8 @@ func _physics_process(delta):
 			var pos = get_position()
 			pos.x = int(pos.x/32) + direction
 			pos.y = int(pos.y/32)
-			if ( tilemap.get_cellv(pos) == 2 ): # 2 is Fire
+			if ( tilemap.get_cellv(pos) == tilemap.elements.FIRE ): # 2 is Fire
+			#if ( tilemap.is_icev(pos) ):
 				tilemap.set_cellv(pos, -1)
 				get_tree().change_scene("res://Phases/Menu.tscn")
 #				tilemap.remove_child(self)
