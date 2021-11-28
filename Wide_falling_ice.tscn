@@ -16,4 +16,5 @@ tex_middle = ExtResource( 4 )
 tex_alone = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 10, 10 )
 shape = SubResource( 1 )

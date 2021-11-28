@@ -18,7 +18,7 @@ func init(width):
 	var shape = collision.get_shape()
 	shape.set_extents(Vector2(15*width, 16))
 	# create all sprites
-	if ( width == 1 ):
+	if width == 1:
 		var ice = Sprite.new()
 		ice.set_texture(tex_alone)
 		self.add_child(ice)
@@ -64,21 +64,15 @@ func _physics_process(_delta):
 				# create two wide_falling_ice
 				if i > my_x:
 					# first ice
-					var wide_ice = load("res://Wide_falling_ice.tscn").instance()
-					var width = abs(i - my_x)
-					wide_ice.init(width)
-					tilemap.add_child(wide_ice)
-					wide_ice.set_position(32*Vector2(my_x, my_y) + Vector2(16, 48))
+					tilemap.create_falling_ice(my_x, my_y, abs(i - my_x))
 				if i < my_x + width - 1:
 					# second ice
-					var wide_ice = load("res://Wide_falling_ice.tscn").instance()
-					var width = abs(my_x + width - i - 2)
-					wide_ice.init(width)
-					tilemap.add_child(wide_ice)
-					wide_ice.set_position(32*Vector2(i + 1, my_y) + Vector2(16, 16))
+					tilemap.create_falling_ice(i + 1, my_y, my_x + width - i - 1)
 				tilemap.set_cell(i, my_y + 1, tilemap.elements.EMPTY)
-				tilemap.remove_child(self)
 				if tilemap.is_win():
 					print( "Win" )
+					tilemap.print_tree_pretty()
+					get_tree().change_scene("res://Phases/Menu.tscn")
+				tilemap.remove_child(self)
 				return
 		assert( false ) # always should touch a solid or a fire

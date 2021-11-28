@@ -27,7 +27,9 @@ func _ready():
 func _create_ice_timer_timeout():
 	can_create_ice = true
 
-enum elements {EMPTY = -1, WALL = 0, ICE = 1, FIRE = 2, PLAYER = 3}
+#enum elements {EMPTY = -1, WALL = 0, ICE = 1, FIRE = 2, PLAYER = 3}
+enum elements {EMPTY = -1, WALL = 0, ICE = 1, ICE_LEFT = 2,
+			   ICE_MIDDLE = 3, ICE_RIGHT = 4, FIRE = 5, PLAYER = 6}
 func get_element(position):
 	# position should be a Vector2
 	position.x = int(position.x/32)
@@ -35,7 +37,7 @@ func get_element(position):
 	return tilemap.get_cellv(position)
 
 func get_tiled_position():
-	var p = get_position()
+	var p = get_position() + Vector2(16, 16)
 	p.x = int(p.x/32)
 	p.y = int(p.y/32)
 	return p
@@ -43,58 +45,38 @@ func get_tiled_position():
 func _physics_process(_delta):
 	if ( is_on_floor() and can_control == true): # is on floor, can move and etc
 		if ( can_create_ice and Input.is_action_pressed(\"ui_down\") ):
-			var pos_foward_bellow = get_tiled_position() + face_direction*Vector2(1, 0) + Vector2(0, 1)
-			if (!tilemap.is_solidv(get_tiled_position() + Vector2(0, 1))):
-				pos_foward_bellow -= face_direction*Vector2(1, 0)
-			if (tilemap.can_create_destroy_icev(pos_foward_bellow)):
-				tilemap.create_destroy_icev(pos_foward_bellow)
+			var pos_create_ice = get_tiled_position() + Vector2(0, 1)
+			if (tilemap.is_solidv(pos_create_ice)):
+				pos_create_ice += face_direction*Vector2(1, 0)
+			if (tilemap.can_create_destroy_icev(pos_create_ice)):
+				tilemap.create_destroy_icev(pos_create_ice)
 				can_create_ice = false
 				timer.start()
-
-		elif ( Input.is_action_pressed(\"ui_left\") ):
-			face_direction = -1
-			var v = Vector2(-32 * 5, 0)
+		elif( Input.is_action_pressed(\"ui_right\") || Input.is_action_pressed(\"ui_left\") ):
+			if ( Input.is_action_pressed(\"ui_right\") ):
+				face_direction = 1
+			elif ( Input.is_action_pressed(\"ui_left\") ):
+				face_direction = -1
+			self.get_child(1).flip_h = false if face_direction == 1 else true
+			var v = Vector2(face_direction * 32 * 5, 0)
 			var _unused = move_and_slide(v, NORMAL)
 			var p = get_tiled_position()
 			var x = p.x
 			var y = p.y
-			var left_solid = tilemap.is_solid(x - 1, y)
+			var front_solid = tilemap.is_solid(x + face_direction, y)
 			var upper_solid = tilemap.is_solid(x, y - 1)
-			var upper_left_solid = tilemap.is_solid(x - 1, y - 1)
-			var left_left_solid = tilemap.is_solid(x - 2, y)
+			var upper_front_solid = tilemap.is_solid(x + face_direction, y - 1)
+			var front_front_solid = tilemap.is_solid(x + 2*face_direction, y)
 			# test push ICE
-			if (is_on_wall() and tilemap.is_ice(x - 1, y) and !left_left_solid):
-				tilemap.set_cell(x - 1, y, elements.EMPTY)
+			if (is_on_wall() and tilemap.is_ice(x + face_direction, y) and !front_front_solid):
+				tilemap.set_cell(x + face_direction, y, elements.EMPTY)
 				var ice = load(\"res://Ice.tscn\").instance(-1)
 				tilemap.add_child(ice)
-				ice.set_position(32*Vector2(x - 1, y) + Vector2(0, 16))
-				ice.set_direction(-1)
+				ice.set_position(32*Vector2(x + face_direction, y) + Vector2(0, 16) + Vector2(16, 0))
+				ice.set_direction(face_direction)
 				can_control = false
-			elif ( is_on_wall() and left_solid and !upper_solid and !upper_left_solid):
-				set_position(get_position() + Vector2(-1, -32))
-
-		elif ( Input.is_action_pressed(\"ui_right\") ):
-			face_direction = 1
-			var v = Vector2(+32 * 5, 0)
-			var _unused = move_and_slide(v, NORMAL)
-			var p = get_tiled_position()
-			var x = p.x
-			var y = p.y
-			var right_solid = tilemap.is_solid(x + 1, y)
-			var upper_solid = tilemap.is_solid(x, y - 1)
-			var upper_right_solid = tilemap.is_solid(x + 1, y - 1)
-			var right_right_solid = tilemap.is_solid(x + 2, y)
-			# test push ICE
-			if (is_on_wall() and tilemap.is_ice(x + 1, y) and !right_right_solid):
-				tilemap.set_cell(x + 1, y, elements.EMPTY)
-				var ice = load(\"res://Ice.tscn\").instance()
-				tilemap.add_child(ice)
-				ice.set_position(32*Vector2(x + 1, y) + Vector2(32, 16))
-				ice.set_direction(+1)
-				can_control = false
-			elif (is_on_wall() and right_solid and !upper_solid and !upper_right_solid):
-				set_position(get_position() + Vector2(+1, -32))
-
+			elif ( is_on_wall() and front_solid and !upper_solid and !upper_front_solid):
+				set_position(get_position() + Vector2(face_direction, -32))
 	else: # cannot control
 		if (!is_on_floor()):
 			var v = Vector2(0, 160)
@@ -110,10 +92,12 @@ extents = Vector2( 7.14286, 10 )
 script = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 11.5, 15 )
 scale = Vector2( 1.6, 1.5 )
 shape = SubResource( 2 )
 
 [node name="jogador" type="Sprite" parent="."]
+position = Vector2( 11, 14 )
 texture = ExtResource( 1 )
 
 [node name="Timer" type="Timer" parent="."]
