@@ -43,19 +43,19 @@ func get_tiled_position():
 	return p
 
 func _physics_process(_delta):
-	if ( is_on_floor() and can_control == true): # is on floor, can move and etc
-		if ( can_create_ice and Input.is_action_pressed(\"ui_down\") ):
+	if is_on_floor() and can_control == true: # is on floor, can move and etc
+		if can_create_ice and Input.is_action_pressed(\"ui_down\"):
 			var pos_create_ice = get_tiled_position() + Vector2(0, 1)
-			if (tilemap.is_solidv(pos_create_ice)):
+			if tilemap.is_solidv(pos_create_ice):
 				pos_create_ice += face_direction*Vector2(1, 0)
-			if (tilemap.can_create_destroy_icev(pos_create_ice)):
+			if tilemap.can_create_destroy_icev(pos_create_ice):
 				tilemap.create_destroy_icev(pos_create_ice)
 				can_create_ice = false
 				timer.start()
-		elif( Input.is_action_pressed(\"ui_right\") || Input.is_action_pressed(\"ui_left\") ):
-			if ( Input.is_action_pressed(\"ui_right\") ):
+		elif Input.is_action_pressed(\"ui_right\") || Input.is_action_pressed(\"ui_left\"):
+			if Input.is_action_pressed(\"ui_right\"):
 				face_direction = 1
-			elif ( Input.is_action_pressed(\"ui_left\") ):
+			elif Input.is_action_pressed(\"ui_left\"):
 				face_direction = -1
 			self.get_child(1).flip_h = false if face_direction == 1 else true
 			var v = Vector2(face_direction * 32 * 5, 0)
@@ -68,20 +68,22 @@ func _physics_process(_delta):
 			var upper_front_solid = tilemap.is_solid(x + face_direction, y - 1)
 			var front_front_solid = tilemap.is_solid(x + 2*face_direction, y)
 			# test push ICE
-			if (is_on_wall() and tilemap.is_ice(x + face_direction, y) and !front_front_solid):
+			if is_on_wall() and tilemap.is_ice(x + face_direction, y) and !front_front_solid:
 				tilemap.set_cell(x + face_direction, y, elements.EMPTY)
 				var ice = load(\"res://Ice.tscn\").instance(-1)
 				tilemap.add_child(ice)
 				ice.set_position(32*Vector2(x + face_direction, y) + Vector2(0, 16) + Vector2(16, 0))
 				ice.set_direction(face_direction)
 				can_control = false
-			elif ( is_on_wall() and front_solid and !upper_solid and !upper_front_solid):
+			elif is_on_wall() and tilemap.get_cell(x + face_direction, y) == elements.FIRE:
+				print_debug(\"Não pude mudar o mundo\")
+			elif is_on_wall() and front_solid and !upper_solid and !upper_front_solid:
 				set_position(get_position() + Vector2(face_direction, -32))
 	else: # cannot control
-		if (!is_on_floor()):
+		if !is_on_floor():
 			var v = Vector2(0, 160)
 			var hit = move_and_slide(v, NORMAL)
-			if ( hit != null ):
+			if hit != null:
 				can_control = true
 "
 

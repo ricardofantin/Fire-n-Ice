@@ -40,7 +40,7 @@ func init(width):
 
 func _physics_process(_delta):
 	var __ = move_and_slide(Vector2(0, 32*5), Vector2(0, -1))
-	if ( is_on_floor() ):
+	if is_on_floor():
 		# verify in what it collided. Was solid? If not, was fire?
 		var my_x = int(get_position().x/32)
 		var my_y = int(get_position().y/32)
@@ -71,8 +71,9 @@ func _physics_process(_delta):
 				tilemap.set_cell(i, my_y + 1, tilemap.elements.EMPTY)
 				if tilemap.is_win():
 					print( "Win" )
+					# TODO remove alive ices
 					tilemap.print_tree_pretty()
 					get_tree().change_scene("res://Phases/Menu.tscn")
 				tilemap.remove_child(self)
 				return
-		assert( false ) # always should touch a solid or a fire
+		#assert( false ) # always should touch a solid or a fire

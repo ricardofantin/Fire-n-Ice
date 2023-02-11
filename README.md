@@ -8,4 +8,15 @@ Godot is an free software to create games. Its two main advantages are the expor
 ## Controls
  * **Mouse** to select stage.
  * **Left** and **right** move the mage, push an ice block or climb short walls.
- * **Down** create/remove an ice just bellow a little ahead of the mage.
+ * **Down** create/remove an ice just bellow and a little ahead of the mage.
+
+## TODO
+ * Restart mission when player touchs the fire;
+ * Ice fall on fire do not erase both always;
+ * When some ice fall or is removed, verify element above.
+
+## Code organization
+The tree structure is:
+Phase
+|-- TileMap
+    |-- player

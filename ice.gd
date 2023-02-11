@@ -40,8 +40,10 @@ func _physics_process(delta):
 			if ( tilemap.get_cellv(pos) == tilemap.elements.FIRE ): # 2 is Fire
 			#if ( tilemap.is_icev(pos) ):
 				tilemap.set_cellv(pos, -1)
-				get_tree().change_scene("res://Phases/Menu.tscn")
-#				tilemap.remove_child(self)
+				if tilemap.is_win():
+					get_tree().change_scene("res://Phases/Menu.tscn")
+				else:
+					tilemap.remove_child(self)
 			else:
 				pos.x -= direction
 				tilemap.set_cellv(pos, 1)
