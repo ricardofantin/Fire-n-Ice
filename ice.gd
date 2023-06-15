@@ -41,7 +41,11 @@ func _physics_process(delta):
 			#if ( tilemap.is_icev(pos) ):
 				tilemap.set_cellv(pos, -1)
 				if tilemap.is_win():
-					get_tree().change_scene("res://Phases/Menu.tscn")
+					print("Will emit mission_end")
+					tilemap.emit_signal("mission_end")
+					#get_tree().root.emit_signal("wins")
+					#emit_signal("mission_end")
+					#get_tree().change_scene("res://Phases/Menu.tscn")
 				else:
 					tilemap.remove_child(self)
 			else:

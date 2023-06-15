@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Phases/Menu.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 1 )
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -11,8 +14,10 @@ __meta__ = {
 }
 
 [node name="GridContainer" type="GridContainer" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = 535.0
+margin_top = 325.0
+margin_right = 597.0
+margin_bottom = 393.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -36,3 +41,65 @@ margin_top = 48.0
 margin_right = 62.0
 margin_bottom = 68.0
 text = "Phase3"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_left = 450.0
+margin_right = 520.0
+margin_bottom = 20.0
+rect_scale = Vector2( 3, 3 )
+size_flags_stretch_ratio = 2.0
+custom_styles/focus = SubResource( 1 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+custom_colors/selection_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color_selected = Color( 0, 0, 0, 1 )
+text = "Fire'n Ice"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tutorials" type="VBoxContainer" parent="."]
+margin_left = 224.594
+margin_top = 125.109
+margin_right = 296.594
+margin_bottom = 265.109
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TutorialButton" type="Button" parent="Tutorials"]
+margin_right = 72.0
+margin_bottom = 20.0
+text = "Tutorial 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tutorial2" type="Button" parent="Tutorials"]
+margin_top = 24.0
+margin_right = 72.0
+margin_bottom = 44.0
+text = "Tutorial 2"
+
+[node name="Tutorial3" type="Button" parent="Tutorials"]
+margin_top = 48.0
+margin_right = 72.0
+margin_bottom = 68.0
+text = "Tutorial 3"
+
+[node name="Tutorial4" type="Button" parent="Tutorials"]
+margin_top = 72.0
+margin_right = 72.0
+margin_bottom = 92.0
+text = "Tutorial 4"
+
+[node name="Tutorial5" type="Button" parent="Tutorials"]
+margin_top = 96.0
+margin_right = 72.0
+margin_bottom = 116.0
+text = "Tutorial 5"
+
+[node name="Tutorial6" type="Button" parent="Tutorials"]
+margin_top = 120.0
+margin_right = 72.0
+margin_bottom = 140.0
+text = "Tutorial 6"

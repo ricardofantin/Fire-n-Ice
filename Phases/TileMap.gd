@@ -1,5 +1,7 @@
 extends TileMap
 
+signal mission_end
+
 enum elements {EMPTY = -1, WALL = 0, ICE = 1, ICE_LEFT = 2,
 			   ICE_MIDDLE = 3, ICE_RIGHT = 4, FIRE = 5, PLAYER = 6}
 
